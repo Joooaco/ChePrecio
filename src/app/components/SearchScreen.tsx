@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
-import { Input } from '@/app/components/ui/input';
-import { Button } from '@/app/components/ui/button';
-import { Logo } from '@/app/components/Logo';
+import { Input } from './ui/input';
+import { Button } from './ui/button';
+import { Logo } from './Logo';
 
 interface SearchScreenProps {
   onSearch: (query: string) => void;
@@ -44,7 +44,7 @@ const suggestedStores = [
 
 export function SearchScreen({ onSearch, onSearchStore }: SearchScreenProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [suggestions, setSuggestions] = useState<Array<{text: string, type: 'product' | 'store'}>>([]);
+  const [suggestions, setSuggestions] = useState<Array<{ text: string, type: 'product' | 'store' }>>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
@@ -73,11 +73,11 @@ export function SearchScreen({ onSearch, onSearchStore }: SearchScreenProps) {
       const filteredProducts = suggestedProducts
         .filter(product => product.toLowerCase().includes(searchQuery.toLowerCase()))
         .map(text => ({ text, type: 'product' as const }));
-      
+
       const filteredStores = suggestedStores
         .filter(store => store.toLowerCase().includes(searchQuery.toLowerCase()))
         .map(text => ({ text, type: 'store' as const }));
-      
+
       const combined = [...filteredStores, ...filteredProducts].slice(0, 6);
       setSuggestions(combined);
       setShowSuggestions(true);
@@ -94,7 +94,7 @@ export function SearchScreen({ onSearch, onSearchStore }: SearchScreenProps) {
       const matchedStore = suggestedStores.find(
         store => store.toLowerCase() === searchQuery.toLowerCase()
       );
-      
+
       if (matchedStore) {
         onSearchStore(matchedStore);
       } else {
@@ -104,11 +104,11 @@ export function SearchScreen({ onSearch, onSearchStore }: SearchScreenProps) {
     }
   };
 
-  const handleSuggestionClick = (suggestion: {text: string, type: 'product' | 'store'}) => {
+  const handleSuggestionClick = (suggestion: { text: string, type: 'product' | 'store' }) => {
     setSearchQuery(suggestion.text);
     setShowSuggestions(false);
     saveSearch(suggestion.text);
-    
+
     if (suggestion.type === 'store') {
       onSearchStore(suggestion.text);
     } else {
@@ -121,7 +121,7 @@ export function SearchScreen({ onSearch, onSearchStore }: SearchScreenProps) {
       <div className="w-full max-w-2xl">
         {/* Logo */}
         <div className="flex justify-center mb-8">
-          <Logo className="w-64" />
+          <Logo className="h-14" />
         </div>
         <div className="text-center mb-12">
           <p className="text-gray-600 dark:text-slate-400 font-medium tracking-wide">Comparador de precios</p>
@@ -136,11 +136,11 @@ export function SearchScreen({ onSearch, onSearchStore }: SearchScreenProps) {
                 type="text"
                 placeholder="¿Qué buscás hoy?"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                 onFocus={() => searchQuery.length > 1 && setShowSuggestions(true)}
                 className="pl-12 h-16 text-lg rounded-2xl border-2 border-gray-300 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-lg focus:border-blue-500 dark:focus:border-blue-600 focus:ring-4 focus:ring-blue-500/10 dark:text-slate-100 dark:placeholder:text-slate-600 transition-all duration-200"
               />
-              
+
               {/* Sugerencias */}
               {showSuggestions && suggestions.length > 0 && (
                 <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-900 border-2 border-gray-200 dark:border-slate-800 rounded-2xl shadow-2xl z-20 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
@@ -152,11 +152,10 @@ export function SearchScreen({ onSearch, onSearchStore }: SearchScreenProps) {
                       className="w-full text-left px-5 py-4 hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors flex items-center justify-between border-b last:border-0 border-gray-100 dark:border-slate-800"
                     >
                       <span className="text-gray-800 dark:text-slate-200 font-medium">{suggestion.text}</span>
-                      <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${
-                        suggestion.type === 'store' 
-                          ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' 
-                          : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                      }`}>
+                      <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${suggestion.type === 'store'
+                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+                        : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                        }`}>
                         {suggestion.type === 'store' ? 'Comercio' : 'Producto'}
                       </span>
                     </button>
